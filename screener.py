@@ -1,11 +1,21 @@
 # screener.py
 
 from rich.console import Console
-console = Console()
-
-from dotenv import load_dotenv
 import os
 
+# Initialize console (works in headless environments)
+try:
+    console = Console()
+except Exception:
+    # Fallback for headless environments
+    class DummyConsole:
+        def print(self, *args, **kwargs):
+            print(*args)
+    console = DummyConsole()
+
+from dotenv import load_dotenv
+
+# Load .env file if it exists (won't fail if missing)
 load_dotenv()
 
 API_KEY = os.getenv("API_KEY")
