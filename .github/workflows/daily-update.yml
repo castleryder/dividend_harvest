@@ -1,0 +1,38 @@
+name: Daily Dividend Harvest Update
+
+on:
+  schedule:
+    # Run daily at 9:00 AM UTC (adjust timezone as needed)
+    - cron: '0 9 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      
+      - name: Run dividend harvest
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          python run.py
+      
+      - name: Commit and push data file
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add data/latest.json exports/*.csv
+          git commit -m "Daily update: $(date +%Y-%m-%d)" || exit 0
+          git push
+

@@ -37,6 +37,12 @@ def main() -> int:
         # Save to CSV
         df.to_csv(filename, index=False)
         
+        # Also save latest data for Hugging Face app (JSON format)
+        data_path = Path("data")
+        data_path.mkdir(exist_ok=True)
+        latest_file = data_path / "latest.json"
+        df.to_json(latest_file, orient="records", date_format="iso")
+        
         # Verify file was created
         if not filename.exists():
             console.print(f"[bold red]❌ Error: File was not created: {filename}[/bold red]")

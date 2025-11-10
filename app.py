@@ -24,14 +24,28 @@ st.markdown("""
 st.markdown("<h1 style='text-align: center; color: #2d4d2d;'>🇨🇦 Alberta Dividend Harvest Machine</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: #666;'>Built by @xbitsofalex • Harvesting dividends while the market sleeps</p>", unsafe_allow_html=True)
 
-# Cache the data fetch to avoid refetching on every rerun
-@st.cache_data(ttl=300)  # Cache for 5 minutes
-def fetch_dividend_data():
-    """Fetch dividend data with error handling"""
+# Load data from file (updated by scheduled job, no API calls)
+@st.cache_data(ttl=3600)  # Cache for 1 hour (data updates daily via GitHub Actions)
+def load_dividend_data():
+    """Load dividend data from file (no API calls)"""
     try:
-        return get_dividend_harvest()
+        import json
+        from pathlib import Path
+        
+        latest_file = Path("data/latest.json")
+        if latest_file.exists():
+            with open(latest_file, 'r') as f:
+                data = json.load(f)
+            df = pd.DataFrame(data)
+            # Convert date strings back to datetime
+            if 'next_div_date' in df.columns:
+                df['next_div_date'] = pd.to_datetime(df['next_div_date'])
+            return df
+        else:
+            st.warning("⚠️ No data file found. Waiting for scheduled update...")
+            return pd.DataFrame()
     except Exception as e:
-        st.error(f"Error fetching data: {str(e)}")
+        st.error(f"Error loading data: {str(e)}")
         return pd.DataFrame()
 
 
@@ -39,17 +53,16 @@ def fetch_dividend_data():
 with st.sidebar:
     st.header("⚙️ Controls")
     
-    if st.button("🔄 Refresh Data", use_container_width=True):
-        st.cache_data.clear()
-        st.rerun()
+    st.info("📅 Data updates daily via scheduled job")
+    st.caption("Last update: Check GitHub Actions")
     
     st.divider()
     st.caption(f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 
-# Fetch data with loading state
-with st.spinner("🔄 Fetching fresh dividend data from EODHD..."):
-    df = fetch_dividend_data()
+# Load data from file (no API calls - updated daily via GitHub Actions)
+with st.spinner("🔄 Loading dividend data..."):
+    df = load_dividend_data()
 
 
 # Handle empty state
