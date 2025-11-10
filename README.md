@@ -1,6 +1,6 @@
 ---
 title: Alberta Dividend Harvest Machine
-emoji: 🇨🇦
+emoji: 💰
 colorFrom: green
 colorTo: blue
 sdk: streamlit
