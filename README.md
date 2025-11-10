@@ -1,12 +1,19 @@
-# Alberta Dividend Harvest Machine
+---
+title: Alberta Dividend Harvest Machine
+emoji: 🇨🇦
+colorFrom: green
+colorTo: blue
+sdk: streamlit
+sdk_version: "1.51.0"
+app_file: app.py
+pinned: false
+---
 
 # Alberta Dividend Harvest Machine
 
 **Real-time scanner for high-conviction dividend captures**  
-US + TSX stocks only • >3 % yield • >$1B market cap • Ex-dividend in the next 35 days  
+US + TSX stocks only • >3% yield • >$1B market cap • Ex-dividend in the next 35 days  
 Built by @xbitsofalex in Calgary, Alberta
-
-Live dashboard → https://alberta-dividend-harvester.streamlit.app
 
 ## Why These Exact Filters? (Pro-Level Reasoning)
 
@@ -34,4 +41,16 @@ cd dividend_harvest
 pip install -r requirements.txt
 cp .env.example .env
 # ← paste your free EODHD key into .env
+```
 
+## Run CLI
+
+```bash
+python run.py
+```
+
+## Run Dashboard
+
+```bash
+streamlit run streamlit_app.py
+```
