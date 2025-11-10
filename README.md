@@ -29,8 +29,8 @@ Zero garbage. Pure alpha.
 ## One-Command Setup
 
 ```bash
-git clone https://github.com/OnaPath/dividend_harvest.git
-cd dividend-harvest-canada
+git clone https://github.com/castleryder/dividend_harvest.git
+cd dividend_harvest
 pip install -r requirements.txt
 cp .env.example .env
 # ← paste your free EODHD key into .env
