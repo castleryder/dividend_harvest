@@ -18,18 +18,18 @@ except Exception:
 
 # REAL S&P 500 + TSX tickers — pulled live 5 minutes ago, no Wikipedia
 TICKERS = [
-    # S&P 500 (top 100 + dividend legends)
+    # S&P 500 dividend legends
     "AAPL","MSFT","NVDA","GOOGL","AMZN","META","BRK.B","TSLA","JPM","UNH","V","XOM","MA","PG","JNJ",
     "HD","COST","MRK","ABBV","NFLX","AMD","CRM","BAC","KO","ADBE","PEP","LIN","TMUS","ACN","MCD",
     "ABT","TMO","CSCO","GE","TXN","AMAT","NOW","INTU","UBER","AMGN","PGR","QCOM","BKNG","MS","CAT",
     "ISRG","CMCSA","VZ","RTX","MU","SYK","LRCX","ADI","REGN","PANW","INTC","ELV","MDLZ","PLD",
     "ETN","SCHW","ANET","SNPS","CDNS","LMT","BSX","CB","FI","ADP","KLAC",
-    # CANADIAN DIVIDEND KINGS (TSX)
+    # CANADIAN KINGS
     "RY","TD","BMO","BNS","CM","ENB","TRP","SU","CNQ","CVE","IMO","MFC","SLF","GWO","POW",
     "T","BCE","RCI.B","QSR","MG","L","GIL","MRU","EMP.A","WN","ATD","DOO","CCL.B","SAP",
-    # US DIVIDEND ARISTOCRATS
-    "MO","T","PM","O","VTR","WPC","EPD","MPLX","ET","KMI","WMB","OKE","PEP","KHC","GIS",
-    "CAG","CPB","HRL","SJM","FLO","K","LMT","NOC","GD","RTX","BA","HON","UNP","CSX","NSC",
+    # US ARISTOCRATS
+    "MO","T","PM","O","VTR","WPC","EPD","MPLX","ET","KMI","WMB","OKE","KHC","GIS",
+    "CAG","CPB","HRL","SJM","FLO","K","NOC","GD","BA","HON","UNP","CSX","NSC",
     "CAT","DE","DOW","DD","LYB","EMN","ALB","FCX","NEM","AEM","KGC","RGLD","WPM","FNV",
     "VLO","MPC","PSX","HES","OXY","APA","DVN","CTRA","EOG","FANG","COP","MRO","DUK","SO",
     "ED","NEE","EXC","AEP","XEL","WEC","LNT","AEE","CMS","NI","DTE","PEG"
@@ -48,12 +48,12 @@ def get_dividend_harvest() -> pd.DataFrame:
         
         try:
             data = yf.Tickers(" ".join(batch))
-            for t in data.tickers:
-                info = t.info
+            for ticker in data.tickers:
+                info = ticker.info
                 try:
+                    # DO NOT SKIP IF dividendYield IS NONE — Yahoo lags!
                     ex_div = info.get('exDividendDate')
-                    if not ex_div: continue
-                    if not info.get('dividendYield'): continue
+                    if not ex_div or ex_div < 1700000000: continue  # before 2024
                     
                     row = {
                         'code': info.get('symbol', ''),
@@ -61,11 +61,11 @@ def get_dividend_harvest() -> pd.DataFrame:
                         'exchange': info.get('exchange', ''),
                         'close': info.get('previousClose', 0),
                         'market_capitalization': info.get('marketCap', 0),
-                        'dividend_yield': info.get('dividendYield', 0) * 100,
-                        'payout_ratio': info.get('payoutRatio', 0),  # Yahoo returns as decimal (0.62 = 62%)
+                        'dividend_yield': (info.get('dividendYield') or 0) * 100,  # Handle None
+                        'payout_ratio': info.get('payoutRatio', 1),  # Default to 1 if missing
                         'pe_ratio': info.get('trailingPE', 999),
                         'earnings_share': info.get('trailingEps', 0),
-                        'beta': info.get('beta', 0),
+                        'beta': info.get('beta', 2),  # Default to 2 if missing
                         'volume_avg_30d': info.get('averageVolume', 0),
                         '52_week_high': info.get('fiftyTwoWeekHigh', 0),
                         '52_week_low': info.get('fiftyTwoWeekLow', 0),
