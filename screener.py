@@ -35,7 +35,7 @@ def get_dividend_harvest() -> pd.DataFrame:
             symbols_response = requests.get(url_symbols, timeout=30)
             symbols_response.raise_for_status()
             symbols = symbols_response.json()
-            exchange_tickers = [s['code'] for s in symbols if s.get('type') == 'Common Stock']
+            exchange_tickers = [s['Code'] for s in symbols if s.get('Type') == 'Common Stock']
             tickers.extend(exchange_tickers)
             console.print(f"✅ Loaded {len(exchange_tickers)} tickers from {exchange}", style="bold green")
         except Exception as e:
