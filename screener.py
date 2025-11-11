@@ -55,9 +55,19 @@ def _robust_get(url: str) -> requests.Response:
                 status_code = response.status_code if response else "unknown"
                 error_text = response.text if response else "No response"
                 raise Exception(f"API error ({status_code}): {error_text}")
+        except requests.exceptions.RequestException as e:
+            # Catch all other request exceptions (ConnectionError, etc.)
+            if attempt == MAX_RETRIES - 1:
+                raise Exception(f"API request failed: {str(e)}")
+            console.print(f"⏳ Request failed, retrying ({attempt + 1}/{MAX_RETRIES}): {str(e)}", style="bold yellow")
+            sleep(2 ** attempt)
 
 
 def get_dividend_harvest() -> pd.DataFrame:
+    # Validate API key
+    if not API_KEY or API_KEY == "your_actual_eodhd_key_here_replace_me":
+        raise ValueError("API_KEY not set. Please set it in environment variables or .env file")
+    
     today = datetime.now().date()
     
     url = (
