@@ -41,8 +41,8 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h1 style='text-align: center; color: #2d4d2d;'>🇨🇦 Alberta Dividend Harvest Machine</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: #666;'>Built by @xbitsofalex • Harvesting dividends while the market sleeps</p>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #2d4d2d;'>The Real Money Isn't Made by Catching Every Little Wave</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #666;'>Wait for the Right Setup</p>", unsafe_allow_html=True)
 
 # Load data from file (updated by scheduled job, no API calls)
 @st.cache_data(ttl=3600)  # Cache for 1 hour (data updates daily via GitHub Actions)
