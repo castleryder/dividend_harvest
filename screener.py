@@ -22,7 +22,7 @@ TICKERS = [
     "AAPL","MSFT","NVDA","GOOGL","AMZN","META","BRK.B","TSLA","JPM","UNH","V","XOM","MA","PG","JNJ",
     "HD","COST","MRK","ABBV","NFLX","AMD","CRM","BAC","KO","ADBE","PEP","LIN","TMUS","ACN","MCD",
     "ABT","TMO","CSCO","GE","TXN","AMAT","NOW","INTU","UBER","AMGN","PGR","QCOM","BKNG","MS","CAT",
-    "ISRG","CMCSA","VZ","RTX","MU","SYK","LRCX","ADI","REGN","KLAC","PANW","INTC","ELV","MDLZ","PLD",
+    "ISRG","CMCSA","VZ","RTX","MU","SYK","LRCX","ADI","REGN","PANW","INTC","ELV","MDLZ","PLD",
     "ETN","SCHW","ANET","SNPS","CDNS","LMT","BSX","CB","FI","ADP","KLAC",
     # CANADIAN DIVIDEND KINGS (TSX)
     "RY","TD","BMO","BNS","CM","ENB","TRP","SU","CNQ","CVE","IMO","MFC","SLF","GWO","POW",
@@ -62,7 +62,7 @@ def get_dividend_harvest() -> pd.DataFrame:
                         'close': info.get('previousClose', 0),
                         'market_capitalization': info.get('marketCap', 0),
                         'dividend_yield': info.get('dividendYield', 0) * 100,
-                        'payout_ratio': info.get('payoutRatio', 0),
+                        'payout_ratio': info.get('payoutRatio', 0) * 100,  # Convert to percentage
                         'pe_ratio': info.get('trailingPE', 999),
                         'earnings_share': info.get('trailingEps', 0),
                         'beta': info.get('beta', 0),
@@ -97,7 +97,7 @@ def get_dividend_harvest() -> pd.DataFrame:
         (df['dividend_yield'] >= 3.0) &
         (df['earnings_share'] > 0) &
         (df['pe_ratio'] < 25) &
-        (df['payout_ratio'] < 0.7) &
+        (df['payout_ratio'] < 70) &  # Now in percentage (70% = 70)
         (df['volume_avg_30d'] > 300000) &
         (df['beta'] < 1.5) &
         (df['days_until_exdiv'].between(0, 35)) &
