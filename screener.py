@@ -76,7 +76,9 @@ def get_dividend_harvest() -> pd.DataFrame:
     
     # API call with retry logic
     console.print("🔄 Pulling fresh data from EODHD...", style="bold blue")
-    console.print(f"🌎 Query URL (copy-paste to browser to debug): {url.replace('&', '\n&')}", style="dim")
+    # Format URL for debugging (can't use backslash in f-string expression)
+    debug_url = url.replace('&', '\n&')
+    console.print(f"🌎 Query URL (copy-paste to browser to debug): {debug_url}", style="dim")
     response = _robust_get(url)
     
     # Validate response structure
