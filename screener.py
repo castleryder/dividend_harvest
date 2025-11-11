@@ -57,9 +57,12 @@ def _robust_get(url: str) -> requests.Response:
                 raise Exception(f"API error ({status_code}): {error_text}")
         except requests.exceptions.RequestException as e:
             # Catch all other request exceptions (ConnectionError, etc.)
+            error_msg = str(e)
+            if response:
+                error_msg += f" (Status: {response.status_code}, Response: {response.text[:200]})"
             if attempt == MAX_RETRIES - 1:
-                raise Exception(f"API request failed: {str(e)}")
-            console.print(f"⏳ Request failed, retrying ({attempt + 1}/{MAX_RETRIES}): {str(e)}", style="bold yellow")
+                raise Exception(f"API request failed: {error_msg}")
+            console.print(f"⏳ Request failed, retrying ({attempt + 1}/{MAX_RETRIES}): {error_msg}", style="bold yellow")
             sleep(2 ** attempt)
 
 
