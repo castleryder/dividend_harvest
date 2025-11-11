@@ -30,7 +30,7 @@ def get_dividend_harvest() -> pd.DataFrame:
     
     tickers = []
     for exchange in ['US', 'TO']:
-        url_symbols = f"https://eodhd.com/api/v3/exchange-symbols?api_token={API_KEY}&fmt=json&exchange={exchange}"
+        url_symbols = f"https://eodhd.com/api/v1/exchanges/{exchange}?api_token={API_KEY}&fmt=json"
         try:
             symbols_response = requests.get(url_symbols, timeout=30)
             symbols_response.raise_for_status()
