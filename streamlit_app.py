@@ -48,7 +48,7 @@ with st.sidebar:
 
 
 # Fetch data with loading state
-with st.spinner("🔄 Fetching fresh dividend data from EODHD..."):
+with st.spinner("🔄 Fetching fresh dividend data from Yahoo Finance..."):
     df = fetch_dividend_data()
 
 
@@ -136,4 +136,4 @@ with col2:
 
 # Footer
 st.divider()
-st.caption("🇨🇦 Alberta Dividend Harvest Machine • Data from EODHD API")
+st.caption("🇨🇦 Alberta Dividend Harvest Machine • Data from Yahoo Finance via yfinance")

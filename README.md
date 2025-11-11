@@ -39,8 +39,6 @@ Zero garbage. Pure alpha.
 git clone https://github.com/castleryder/dividend_harvest.git
 cd dividend_harvest
 pip install -r requirements.txt
-cp .env.example .env
-# ← paste your free EODHD key into .env
 ```
 
 ## Run CLI

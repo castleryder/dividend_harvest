@@ -32,11 +32,11 @@ CACHE_FILE = "data/latest.json"
 CACHE_HOURS = 23
 
 def get_dividend_harvest() -> pd.DataFrame:
-    # Load cache if fresh
+    # CACHE FIRST
     if os.path.exists(CACHE_FILE):
-        cache_time = datetime.fromtimestamp(os.path.getmtime(CACHE_FILE))
-        if datetime.now() - cache_time < pd.Timedelta(hours=CACHE_HOURS):
-            console.print("📦 Loading from cache...", style="bold yellow")
+        age_hours = (datetime.now() - datetime.fromtimestamp(os.path.getmtime(CACHE_FILE))).total_seconds() / 3600
+        if age_hours < CACHE_HOURS:
+            console.print(f"📦 Loaded cache ({age_hours:.1f}h old)", style="bold yellow")
             try:
                 df = pd.read_json(CACHE_FILE)
                 console.print(f"✅ Loaded {len(df)} stocks from cache", style="bold green")
@@ -44,7 +44,7 @@ def get_dividend_harvest() -> pd.DataFrame:
             except Exception as e:
                 console.print(f"⚠️ Cache load failed: {e}, fetching fresh...", style="bold yellow")
     
-    console.print("🔄 Harvesting fresh data (this takes 5-6 minutes)...", style="bold green")
+    console.print("🔄 Harvesting fresh data...", style="bold green")
     today = datetime.now().date()
     results = []
     
@@ -58,12 +58,15 @@ def get_dividend_harvest() -> pd.DataFrame:
             if not ex_div:
                 continue
             
+            # THE FIX: DO NOT * 100 HERE — DO IT LATER IN DISPLAY
+            raw_yield = info.get('dividendYield') or 0
+            
             row = {
                 'code': code,
                 'name': info.get('longName', code),
                 'close': info.get('previousClose', 0),
                 'market_capitalization': info.get('marketCap', 0),
-                'dividend_yield': (info.get('dividendYield') or 0) * 100,
+                'dividend_yield': raw_yield,  # Store as decimal (0.0313 = 3.13%)
                 'payout_ratio': info.get('payoutRatio', 1),
                 'pe_ratio': info.get('trailingPE', 999),
                 'earnings_share': info.get('trailingEps', 0),
@@ -87,11 +90,11 @@ def get_dividend_harvest() -> pd.DataFrame:
     
     df['next_div_date'] = pd.to_datetime(df['ex_dividend_date'], unit='s', errors='coerce')
     df['days_until_exdiv'] = (df['next_div_date'] - pd.Timestamp(today)).dt.days
-    df['pct_from_52w_low'] = ((df['close'] - df['52_week_low']) / df['52_week_low'].replace(0, 1) * 100).fillna(0)
+    df['pct_from_52w_low'] = ((df['close'] - df['52_week_low']) / df['52_week_low'].replace(0, 1) * 100)
     
     mask = (
         (df['market_capitalization'] >= 1e9) &
-        (df['dividend_yield'] >= 3.0) &
+        (df['dividend_yield'] >= 0.03) &  # 3% as decimal (0.03)
         (df['earnings_share'] > 0) &
         (df['pe_ratio'] < 25) &
         (df['payout_ratio'] < 0.7) &
@@ -105,6 +108,9 @@ def get_dividend_harvest() -> pd.DataFrame:
     result = result.sort_values(['days_until_exdiv', 'dividend_yield'], ascending=[True, False])
     result['market_capitalization'] /= 1e9
     result['volume_avg_30d'] /= 1000
+    
+    # NOW multiply by 100 for display (only once, at the very end)
+    result['dividend_yield'] = (result['dividend_yield'] * 100).round(2)
     
     # Save cache
     os.makedirs("data", exist_ok=True)
