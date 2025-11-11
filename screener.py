@@ -26,17 +26,26 @@ def get_dividend_harvest() -> pd.DataFrame:
     today = datetime.now().date()
     
     # Step 1: Get ALL US + TO tickers (free, 1 call/month)
-    url_symbols = f"https://eodhd.com/api/v1/symbols?api_token={API_KEY}&fmt=json&exchange=US,TO"
     console.print("🔄 Fetching ticker list...", style="bold blue")
     
-    try:
-        symbols_response = requests.get(url_symbols, timeout=30)
-        symbols_response.raise_for_status()
-        symbols = symbols_response.json()
-        tickers = [s['code'] for s in symbols if s['type'] == 'Common Stock']
-        console.print(f"✅ Loaded {len(tickers)} tickers", style="bold green")
-    except Exception as e:
-        raise Exception(f"Failed to fetch ticker list: {str(e)}")
+    tickers = []
+    for exchange in ['US', 'TO']:
+        url_symbols = f"https://eodhd.com/api/v3/exchange-symbols?api_token={API_KEY}&fmt=json&exchange={exchange}"
+        try:
+            symbols_response = requests.get(url_symbols, timeout=30)
+            symbols_response.raise_for_status()
+            symbols = symbols_response.json()
+            exchange_tickers = [s['code'] for s in symbols if s.get('type') == 'Common Stock']
+            tickers.extend(exchange_tickers)
+            console.print(f"✅ Loaded {len(exchange_tickers)} tickers from {exchange}", style="bold green")
+        except Exception as e:
+            console.print(f"⚠️ Warning: Failed to fetch {exchange} tickers: {str(e)}", style="bold yellow")
+            continue
+    
+    if not tickers:
+        raise Exception("Failed to fetch any tickers from exchanges")
+    
+    console.print(f"✅ Total: {len(tickers)} tickers loaded", style="bold green")
     
     # Step 2: Pull fundamentals for all (free bulk fundamentals — unlimited on free tier!)
     codes = ",".join(tickers[:2000])  # free tier allows huge batches
