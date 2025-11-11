@@ -2,8 +2,9 @@
 
 import streamlit as st
 from datetime import datetime
-from screener import get_dividend_harvest
 import pandas as pd
+import json
+from pathlib import Path
 
 
 st.set_page_config(
@@ -29,9 +30,6 @@ st.markdown("<p style='text-align: center; color: #666;'>Built by @xbitsofalex â
 def load_dividend_data():
     """Load dividend data from file (no API calls)"""
     try:
-        import json
-        from pathlib import Path
-        
         latest_file = Path("data/latest.json")
         if latest_file.exists():
             with open(latest_file, 'r') as f:
