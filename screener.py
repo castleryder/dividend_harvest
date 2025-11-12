@@ -45,7 +45,9 @@ def get_dividend_harvest() -> pd.DataFrame:
                 console.print(f"⚠️ Cache load failed: {e}, fetching fresh...", style="bold yellow")
     
     console.print("🔄 Harvesting fresh data...", style="bold green")
-    today = datetime.now().date()
+    # Use UTC date to match GitHub Actions timezone
+    from datetime import timezone
+    today = datetime.now(timezone.utc).date()
     results = []
     
     for idx, code in enumerate(TICKERS):
@@ -100,7 +102,8 @@ def get_dividend_harvest() -> pd.DataFrame:
         (df['payout_ratio'] < 0.7) &
         (df['volume_avg_30d'] > 300000) &
         (df['beta'] < 1.5) &
-        (df['days_until_exdiv'].between(0, 35)) &
+        (df['days_until_exdiv'] >= 1) &  # Exclude past/today (only future ex-div dates)
+        (df['days_until_exdiv'] <= 35) &  # Within 35 days
         (df['pct_from_52w_low'] > 15)
     )
     
