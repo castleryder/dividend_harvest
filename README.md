@@ -12,7 +12,7 @@ pinned: false
 # Alberta Dividend Harvest Machine
 
 **Real-time scanner for high-conviction dividend captures**  
-US + TSX stocks only • >3% yield • >$1B market cap • Ex-dividend in the next 35 days  
+US + TSX stocks only • >3% yield • >$1B market cap • Ex-dividend in the next 60 days  
 Built by @xbitsofalex in Calgary, Alberta
 
 ## Why These Exact Filters? (Pro-Level Reasoning)
@@ -28,7 +28,7 @@ Built by @xbitsofalex in Calgary, Alberta
 | **30-day Avg Volume** | > 300 000 shares | You can enter/exit $500k position without slippage |
 | **Beta** | < 1.5 | Lower volatility → sleep-well-at-night portfolio |
 | **% from 52-week Low** | > 15 % | Avoids value traps in death spirals. Stock already has momentum |
-| **Days to Ex-Div** | 0–35 days | Perfect window: buy → capture dividend → sell after ex-div pop (or hold forever) |
+| **Days to Ex-Div** | 1–60 days | Perfect window: buy → capture dividend → sell after ex-div pop (or hold forever) |
 
 Result: **~15–60 elite names every day** — MO, BNS, T, CM, VZ, ENB, etc.  
 Zero garbage. Pure alpha.

@@ -1,6 +1,11 @@
 # run.py
 
 from rich.console import Console
+# Fix Windows Unicode encoding issues
+import sys
+if sys.platform == 'win32':
+    import io
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 console = Console()
 
 from screener import get_dividend_harvest
