@@ -38,6 +38,7 @@ jobs:
       - name: Commit and push data file
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
@@ -45,4 +46,10 @@ jobs:
           git add -f data/latest.json data/qualified_tickers.json exports/*.csv
           git commit -m "Daily update: $(date +%Y-%m-%d)" || exit 0
           git push origin main
+          
+          # Also push to Hugging Face to keep it in sync
+          if [ -n "$HF_TOKEN" ]; then
+            git remote set-url hf https://castledrifter:${HF_TOKEN}@huggingface.co/spaces/castledrifter/dividend-harvest || git remote add hf https://castledrifter:${HF_TOKEN}@huggingface.co/spaces/castledrifter/dividend-harvest
+            git push hf main || echo "HF push failed (non-critical)"
+          fi
 
