@@ -26,6 +26,11 @@ jobs:
         run: |
           pip install -r requirements.txt
       
+      - name: Clear stale cache (force fresh data)
+        run: |
+          rm -f data/latest.json
+          echo "Cache cleared - forcing fresh data fetch"
+      
       - name: Run dividend harvest
         run: |
           python run.py
