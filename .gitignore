@@ -47,3 +47,6 @@ config.py
 # Cursor
 .cursor/
 
+# Generated exports (committed by GitHub Actions, but ignore local changes to prevent conflicts)
+exports/*.csv
+
