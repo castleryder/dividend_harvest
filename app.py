@@ -45,7 +45,6 @@ st.markdown("<h1 style='text-align: center; color: #2d4d2d;'>The Real Money Isn'
 st.markdown("<p style='text-align: center; color: #666;'>Wait for the Right Setup</p>", unsafe_allow_html=True)
 
 # Load data from file (updated by scheduled job, no API calls)
-@st.cache_data(ttl=3600)  # Cache for 1 hour (data updates daily via GitHub Actions)
 def load_dividend_data():
     """Load dividend data from file (no API calls)"""
     try:
@@ -72,10 +71,25 @@ def load_dividend_data():
         st.error(f"Error loading data: {str(e)}")
         return pd.DataFrame()
 
+# Cache with file modification time as key (auto-refreshes when file changes)
+@st.cache_data(ttl=300)
+def get_cached_data():
+    """Get cached data, invalidated by file modification time"""
+    latest_file = Path("data/latest.json")
+    if latest_file.exists():
+        # Use file modification time as cache key (changes when file updates)
+        file_mtime = latest_file.stat().st_mtime
+        return load_dividend_data(), file_mtime
+    return load_dividend_data(), 0
+
 
 # Sidebar for controls
 with st.sidebar:
     st.header("⚙️ Controls")
+    
+    if st.button("🔄 Refresh Data", use_container_width=True):
+        st.cache_data.clear()
+        st.rerun()
     
     st.info("📅 Data updates daily via scheduled job")
     st.caption("Last update: Check GitHub Actions")
@@ -86,7 +100,7 @@ with st.sidebar:
 
 # Load data from file (no API calls - updated daily via GitHub Actions)
 with st.spinner("🔄 Loading dividend data..."):
-    df = load_dividend_data()
+    df, _ = get_cached_data()
 
 
 # Handle empty state
