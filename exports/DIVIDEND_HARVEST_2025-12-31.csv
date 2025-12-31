@@ -1,0 +1,3 @@
+code,name,close,market_capitalization,dividend_yield,payout_ratio,pe_ratio,earnings_share,beta,volume_avg_30d,52_week_high,52_week_low,ex_dividend_date,next_div_date,days_until_exdiv,pct_from_52w_low
+TD,The Toronto-Dominion Bank,129.59,221.612146688,3.33,0.36330003,11.219533,11.57,0.891,6418.398,130.165,76.33,1767916800,2026-01-09,9,69.77597274990175
+BMO,Bank of Montreal,179.81,128.039829504,3.74,0.5629,15.625001,11.44,1.223,2430.67,182.9,121.31,1769731200,2026-01-30,30,48.223559475723356
