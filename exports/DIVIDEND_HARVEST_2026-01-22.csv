@@ -1,0 +1,4 @@
+code,name,close,market_capitalization,dividend_yield,payout_ratio,pe_ratio,earnings_share,beta,volume_avg_30d,52_week_high,52_week_low,ex_dividend_date,next_div_date,days_until_exdiv,pct_from_52w_low
+WCP,Whitecap Resources Inc.,11.59,14.681864192,6.12,0.6457,10.548673,1.13,0.902,4939.795,12.02,6.87,1769731200,2026-01-30,8,68.70451237263464
+BMO,Bank of Montreal,185.82,134.422126592,3.56,0.5629,16.38952,11.45,1.223,2453.883,190.98,121.31,1769731200,2026-01-30,8,53.177808919297654
+MFI,Maple Leaf Foods Inc.,25.97,3.19805312,3.43,0.6065,16.541935,1.55,0.981,332.77,32.31111,18.195557,1773014400,2026-03-09,46,42.72715036973035
