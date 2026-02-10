@@ -1,0 +1,4 @@
+code,name,close,market_capitalization,dividend_yield,payout_ratio,pe_ratio,earnings_share,beta,volume_avg_30d,52_week_high,52_week_low,ex_dividend_date,next_div_date,days_until_exdiv,pct_from_52w_low
+SU,Suncor Energy Inc.,73.46,89.037889536,3.24,0.4763,15.282475,4.85,0.753,6849.844,75.5,43.59,1772582400,2026-03-04,22,68.52489103005274
+MFI,Maple Leaf Foods Inc.,26.87,3.412587264,3.22,0.6065,17.651613,1.55,0.947,311.624,32.31111,18.764444,1773014400,2026-03-09,27,43.19635583127323
+RCI.B,Rogers Communications Inc.,49.29,27.290892288,3.98,0.157,3.9466248,12.74,0.848,1682.675,56.15,32.42,1773100800,2026-03-10,28,52.035780382479935
